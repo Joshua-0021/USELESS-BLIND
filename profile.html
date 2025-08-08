@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile — നീ എന്റെ ഞാൻ നിന്റെ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-premium-gradient">
+  
+  <nav class="glass sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold text-xl">❤️</div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800 malayalam">നീ എന്റെ ഞാൻ നിന്റെ</div>
+          <div class="text-xs text-slate-500 uppercase tracking-widest">Animal Matrimony</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="active-profile-display" class="flex items-center gap-2"></div>
+        <a href="my-matches.html" title="My Successful Matches" class="text-2xl hover:text-orange-600">💖</a>
+        <a href="add.html" class="btn-premium">Create Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-5xl mx-auto p-6">
+    <a href="index.html" class="text-sm text-slate-500 hover:text-slate-900">&larr; Back to All Profiles</a>
+    
+    <div id="card" class="mt-4">
+      <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 grid md:grid-cols-3 gap-8">
+        <div id="photoWrap" class="col-span-1"></div>
+        <div class="md:col-span-2">
+          <p id="meta" class="font-semibold text-orange-600"></p>
+          <h1 id="name" class="text-3xl md:text-4xl font-bold text-slate-800 mt-1"></h1>
+          <div id="bio" class="mt-4 text-slate-600 text-lg leading-relaxed border-l-4 border-orange-100 pl-4"></div>
+
+          <div class="mt-8">
+              <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Hobbies</p>
+              <div id="hobbies" class="flex flex-wrap gap-2 mt-2"></div>
+          </div>
+          
+          <div id="actions-panel" class="mt-8 flex flex-wrap gap-4">
+            <button id="likeProfile" class="btn-premium flex items-center gap-2">❤️ Like this Profile</button>
+            <button id="findMatches" class="btn-secondary">Show Potential Matches</button>
+            <button id="openMessages" class="btn-secondary">Open Kurukals</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="matchesList" class="mt-12"></div>
+  </div>
+
+  <div id="messagesModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full modal-content">
+      <div class="p-4 border-b flex justify-between items-center">
+        <h3 class="font-bold text-lg">Kurukals (Messages)</h3>
+        <button id="closeMsgs" class="text-slate-400 hover:text-slate-800 text-2xl">&times;</button>
+      </div>
+      <div class="p-4"><select id="msgTarget" class="form-input mb-3"></select><div id="msgsContainer" class="h-80 overflow-y-auto bg-slate-50 rounded-lg p-4 flex flex-col gap-y-4"></div></div>
+      <div class="p-4 bg-slate-100 rounded-b-2xl flex gap-2"><input id="msgText" placeholder="Write a kurukal..." class="form-input flex-1"><button id="sendMsg" class="btn-premium px-6">Send</button></div>
+    </div>
+  </div>
+  <div id="matchSuccessModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+      <div class="bg-gradient-to-br from-orange-50 to-rose-100 rounded-2xl max-w-sm w-full match-modal-content">
+          <div class="match-avatars"><img id="matchAvatar1" src="" class="match-avatar"><div class="match-heart">❤️</div><img id="matchAvatar2" src="" class="match-avatar"></div>
+          <h2 class="text-3xl font-bold text-orange-600">It's a Mutual Match!</h2>
+          <p class="text-slate-700 mt-2"><span id="matchName1" class="font-bold"></span> and <span id="matchName2" class="font-bold"></span> have liked each other!</p>
+          <div class="mt-6 flex flex-col gap-3"><button id="matchStartChat" class="btn-premium w-full">Start 'Kurukaling'</button><button id="matchClose" class="text-sm text-slate-500 hover:text-slate-800">Continue Browse</button></div>
+      </div>
+  </div>
+
+  <script src="app-local.js"></script>
+  <script>
+    const profileId = new URLSearchParams(location.search).get('id');
+    
+    function checkLikeStatus() {
+        const activeProfile = getActiveProfile();
+        const likeBtn = document.getElementById('likeProfile');
+        if (!activeProfile) {
+            document.getElementById('actions-panel').innerHTML = '<p class="text-sm text-slate-500">Please <a href="matches.html" class="font-bold text-orange-600">pick an active profile</a> to like other members.</p>';
+            return;
+        }
+        if (activeProfile.likes && activeProfile.likes.includes(profileId)) {
+            likeBtn.disabled = true;
+            likeBtn.innerHTML = '✅ Liked!';
+        }
+    }
+
+    document.getElementById('likeProfile').addEventListener('click', () => {
+        const activeProfile = getActiveProfile();
+        if (!activeProfile) return;
+        
+        const sourceId = activeProfile.id;
+        const targetId = profileId;
+
+        addLike(sourceId, targetId);
+        checkLikeStatus();
+
+        if (checkForMutualMatch(sourceId, targetId)) {
+            const sourceProfile = getProfileById(sourceId);
+            const targetProfile = getProfileById(targetId);
+            document.getElementById('matchAvatar1').src = sourceProfile.photo || '';
+            document.getElementById('matchAvatar2').src = targetProfile.photo || '';
+            document.getElementById('matchName1').textContent = sourceProfile.name;
+            document.getElementById('matchName2').textContent = targetProfile.name;
+            document.getElementById('matchSuccessModal').classList.remove('hidden');
+        }
+    });
+
+    // All other functions from your previous profile.html script remain valid.
+    // I am including them here for completeness.
+    function renderProfile() {
+      if (!profileId) { document.getElementById('card').innerHTML = '<p class="p-8">No profile ID provided.</p>'; return; }
+      const p = getProfileById(profileId);
+      if (!p) { document.getElementById('card').innerHTML = '<p class="p-8">Profile not found.</p>'; return; }
+      const placeholderImg = `<div class='w-full h-64 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400'>No Photo</div>`;
+      const imgHTML = p.photo ? `<img src="${p.photo}" class="w-full h-auto object-cover rounded-xl shadow-md" onerror="this.outerHTML='${placeholderImg}'">` : placeholderImg;
+      document.getElementById('photoWrap').innerHTML = imgHTML;
+      document.getElementById('name').textContent = p.name;
+      document.getElementById('meta').textContent = `${p.species} • Age ${p.age} • ${p.diet}`;
+      document.getElementById('bio').textContent = p.bio;
+      const hobbiesContainer = document.getElementById('hobbies');
+      hobbiesContainer.innerHTML = '';
+      (p.hobbies || []).forEach(h => { const t = document.createElement('span'); t.className = 'bg-orange-100 text-orange-800 text-sm font-semibold px-3 py-1 rounded-full'; t.textContent = h; hobbiesContainer.appendChild(t); });
+      if (!p.hobbies || p.hobbies.length === 0) { hobbiesContainer.innerHTML = `<p class="text-slate-400 text-sm">No hobbies listed.</p>`; }
+    }
+    document.getElementById('findMatches').addEventListener('click', () => {
+      const matches = findMatchesFor(profileId); const el = document.getElementById('matchesList');
+      el.innerHTML = '<h2 class="text-3xl font-bold mb-6 text-slate-800">Potential Matches</h2>';
+      if (!matches.length) { el.innerHTML += '<p class="text-slate-500">No suitable matches found.</p>'; return; }
+      const grid = document.createElement('div'); grid.className = 'profile-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-8';
+      matches.forEach(m => {
+        const card = document.createElement('div'); card.className = 'profile-card';
+        const placeholderDiv = `<div class='h-44 bg-slate-100 flex items-center justify-center text-slate-400'>No Photo</div>`;
+        const imgHTML = m.photo ? `<img src="${m.photo}" class="h-44 w-full object-cover" onerror="this.outerHTML='${placeholderDiv}'"/>` : placeholderDiv;
+        card.innerHTML = `${imgHTML}<div class="p-4"><h3 class="font-bold">${m.name} <span class="text-orange-500 font-normal">(${m.score} pts)</span></h3><p class="text-sm text-slate-500">${m.species} • Age ${m.age}</p><div class="mt-4"><a href="profile.html?id=${m.id}" class="text-sm font-semibold text-orange-600 hover:text-orange-800">View Profile &rarr;</a></div></div>`;
+        grid.appendChild(card);
+      });
+      el.appendChild(grid);
+    });
+    const modal = document.getElementById('messagesModal');
+    function openMessagesModal(srcId, preselectId) {
+      if(!srcId) { alert("Please pick an active profile first from the 'Find Matches' page."); return; }
+      const select = document.getElementById('msgTarget'); select.innerHTML = '';
+      loadProfilesFromStorage().filter(p => p.id !== srcId).forEach(o => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = o.name; select.appendChild(opt); });
+      if (preselectId) select.value = preselectId;
+      modal.classList.remove('hidden'); renderMessagesFor(srcId, select.value);
+      select.onchange = () => renderMessagesFor(srcId, select.value);
+    }
+    document.getElementById('openMessages').addEventListener('click', () => openMessagesModal(getActiveProfile()?.id, profileId));
+    document.getElementById('closeMsgs').addEventListener('click', () => modal.classList.add('hidden'));
+    document.getElementById('matchClose').addEventListener('click', () => document.getElementById('matchSuccessModal').classList.add('hidden'));
+    document.getElementById('matchStartChat').addEventListener('click', () => { document.getElementById('matchSuccessModal').classList.add('hidden'); openMessagesModal(getActiveProfile()?.id, profileId); });
+    document.getElementById('sendMsg').addEventListener('click', () => { const from = getActiveProfile()?.id; const to = document.getElementById('msgTarget').value; const text = document.getElementById('msgText').value.trim(); if (!text || !to || !from) return; addMessage(from, to, text); document.getElementById('msgText').value = ''; renderMessagesFor(from, to); });
+    function renderMessagesFor(userA, userB) {
+      const container = document.getElementById('msgsContainer'); container.innerHTML = '';
+      const messages = loadMessagesForPair(userA, userB);
+      if (!messages.length) { container.innerHTML = '<p class="text-center text-slate-400">No kurukals yet.</p>'; return; }
+      messages.forEach(m => { const w = document.createElement('div'); w.className = `w-full flex ${m.from === userA ? 'justify-end' : 'justify-start'}`; const b = document.createElement('div'); b.className = `chat-bubble ${m.from === userA ? 'sent' : 'received'}`; b.textContent = m.text; w.appendChild(b); container.appendChild(w); });
+      container.scrollTop = container.scrollHeight;
+    }
+    
+    // Initial Load
+    renderProfile();
+    checkLikeStatus();
+    window.addEventListener('activeProfileChanged', checkLikeStatus);
+  </script>
+</body>
+</html>

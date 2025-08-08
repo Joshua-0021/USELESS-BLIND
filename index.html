@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>നീ എന്റെ ഞാൻ നിന്റെ — Animal Matrimony</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-premium-gradient text-gray-800">
+  
+<nav class="glass sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold text-xl">❤️</div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800 malayalam">നീ എന്റെ ഞാൻ നിന്റെ</div>
+          <div class="text-xs text-slate-500 uppercase tracking-widest">Animal Matrimony</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="active-profile-display" class="flex items-center gap-2"></div>
+        
+        <a href="my-matches.html" title="My Successful Matches" class="text-2xl hover:text-orange-600">💖</a>
+        <a href="add.html" class="btn-premium">Create Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="text-center max-w-4xl mx-auto p-6 py-16 md:py-24">
+    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-slate-900">Why should humans have all the fun? 🤔</h1>
+    <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+      Our cows, goats, and chickens deserve to find their "jeeva-pankali" (life partner) too! Welcome to the revolutionary platform for animals to find true love.
+    </p>
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="add.html" class="btn-premium">Create a Legend</a>
+      <a href="#featured" class="btn-secondary">Meet the Menagerie</a>
+    </div>
+  </header>
+
+  <section class="max-w-5xl mx-auto px-6 py-12">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-slate-800">Find Love in 3 Simple Steps</h2>
+      <p class="text-slate-500 mt-2">It's easier than stealing a fish fry.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 text-center">
+      <div class="bg-white/50 p-6 rounded-2xl">
+        <div class="text-5xl">📝</div>
+        <h3 class="text-xl font-bold mt-4">Create a Profile</h3>
+        <p class="text-slate-600 mt-2">List your best skills, like 'loud barking abilities' or 'expertise in leftover biryani inspection'.</p>
+      </div>
+      <div class="bg-white/50 p-6 rounded-2xl">
+        <div class="text-5xl">💖</div>
+        <h3 class="text-xl font-bold mt-4">Find a Match</h3>
+        <p class="text-slate-600 mt-2">Our advanced algorithm will find you a partner who respects your nap time. Non-vegetarians preferred!</p>
+      </div>
+      <div class="bg-white/50 p-6 rounded-2xl">
+        <div class="text-5xl">🥳</div>
+        <h3 class="text-xl font-bold mt-4">Arrange a "Kurukal"</h3>
+        <p class="text-slate-600 mt-2">Arrange the perfect first date at the local garbage dump or the neighbor's backyard. Utterly beautiful!</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-6 pb-24" id="featured">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-slate-800">Meet the Menagerie</h2>
+      <p class="text-slate-500 mt-2">Our current superstars looking for "the one".</p>
+    </div>
+    
+    <div class="p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-md mb-8 flex flex-wrap items-center justify-center gap-4">
+      <input id="searchInput" class="form-input flex-grow sm:flex-grow-0 sm:w-48" placeholder="Search name..." />
+      <select id="filterDiet" class="form-input flex-grow sm:flex-grow-0 sm:w-48">
+        <option value="">Any diet</option>
+        <option>Vegetarian</option>
+        <option>Non-Vegetarian</option>
+        <option>Will eat anything</option>
+      </select>
+      <select id="filterSpecies" class="form-input flex-grow sm:flex-grow-0 sm:w-48">
+        <option value="">Any species</option>
+      </select>
+      <button id="clearFilters" class="text-sm text-slate-500 hover:text-orange-600 p-2">Clear Filters</button>
+    </div>
+
+    <div id="profiles" class="profile-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      </div>
+  </main>
+  
+  <section class="bg-white py-20">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-slate-800">Don't Just Take Our Word For It</h2>
+        <p class="text-slate-500 mt-2">Success stories straight from the horse's... well, you get it.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-6 border border-slate-100 rounded-2xl">
+          <p class="text-slate-600">"I was tired of a single life of just chewing cud. This site found me a bull who isn't afraid of a little mud. Mooooo!"</p>
+          <div class="flex items-center gap-3 mt-4 pt-4 border-t border-slate-100">
+            <span class="text-4xl">🐮</span>
+            <div>
+              <p class="font-bold text-slate-800">Sundari</p>
+              <p class="text-sm text-slate-500">Cow, Thrissur</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border border-slate-100 rounded-2xl">
+          <p class="text-slate-600">"My profile specifically said 'must respect my nap time.' I found a handsome partner who does exactly that. 10/10, would meow again."</p>
+          <div class="flex items-center gap-3 mt-4 pt-4 border-t border-slate-100">
+            <span class="text-4xl">🐱</span>
+            <div>
+              <p class="font-bold text-slate-800">Meenakshi S. Pillai</p>
+              <p class="text-sm text-slate-500">Household Queen, Ernakulam</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border border-slate-100 rounded-2xl">
+          <p class="text-slate-600">"They said my colour was a drawback. Here, my 'Senior Food Inspector' skills were appreciated. Found a lovely partner to annoy humans with. Kaa Kaa!"</p>
+          <div class="flex items-center gap-3 mt-4 pt-4 border-t border-slate-100">
+            <span class="text-4xl">🐦</span>
+            <div>
+              <p class="font-bold text-slate-800">K. K. Kunjikrishnan</p>
+              <p class="text-sm text-slate-500">Crow, Kozhikode</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="mt-8 border-t border-slate-200">
+    <div class="max-w-6xl mx-auto p-6 text-center text-sm text-slate-500">
+      © നീ എന്റെ ഞാൻ നിന്റെ — Where every bark, meow, and moo is heard.
+    </div>
+  </footer>
+
+  <script src="app-local.js"></script>
+  <script>
+    (function initSpeciesFilter(){
+      const speciesSet = new Set();
+      loadProfilesFromStorage().forEach(p => p.species && speciesSet.add(p.species.trim()));
+      const selectEl = document.getElementById('filterSpecies');
+      // Clear existing options except the first one
+      while (selectEl.options.length > 1) {
+          selectEl.remove(1);
+      }
+      speciesSet.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; selectEl.appendChild(o); });
+    })();
+  </script>
+</body>
+</html>

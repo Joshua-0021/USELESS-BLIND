@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Choose Profile — നീ എന്റെ ഞാൻ നിന്റെ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-premium-gradient">
+
+  <nav class="glass sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold text-xl">❤️</div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800 malayalam">നീ എന്റെ ഞാൻ നിന്റെ</div>
+          <div class="text-xs text-slate-500 uppercase tracking-widest">Animal Matrimony</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="active-profile-display" class="flex items-center gap-2"></div>
+        <a href="my-matches.html" title="My Successful Matches" class="text-2xl hover:text-orange-600">💖</a>
+        <a href="add.html" class="btn-premium">Create Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto p-6">
+    <div id="main-header">
+      <h1 class="text-3xl font-bold mt-4 text-slate-800">Choose Your Active Profile</h1>
+      <p class="text-slate-600 mt-1">Select a profile below to start liking and matching as them.</p>
+    </div>
+
+    <div id="picker" class="mt-8">
+        <div id="pickGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </div>
+    
+    <div id="results" class="mt-12"></div>
+  </div>
+
+  <script src="app-local.js"></script>
+  <script>
+    const pickGridEl = document.getElementById('pickGrid');
+    const allProfiles = loadProfilesFromStorage();
+    const activeProfile = getActiveProfile();
+
+    if (!allProfiles.length) {
+      pickGridEl.innerHTML = '<p class="text-slate-500 col-span-full">No profiles yet. <a href="add.html" class="text-orange-600 font-semibold">Add one</a> to get started!</p>';
+    } else {
+      allProfiles.forEach(p => {
+        const card = document.createElement('div');
+        const isActive = activeProfile && activeProfile.id === p.id;
+        card.className = `bg-white p-4 rounded-xl shadow-sm border-2 flex flex-col items-center text-center ${isActive ? 'border-orange-500' : 'border-transparent'}`;
+        const img = p.photo ? `<img src="${p.photo}" class="w-24 h-24 rounded-full object-cover mb-3" onerror="this.outerHTML='<div class=\\'w-24 h-24 rounded-full bg-slate-100\\'></div>'"/>` : `<div class="w-24 h-24 rounded-full bg-slate-100"></div>`;
+        card.innerHTML = `${img}
+          <h4 class="font-bold text-slate-800">${p.name}</h4>
+          <p class="text-sm text-slate-500 mb-4">${p.species}</p>
+          <button class="w-full mt-auto btn-secondary !py-2 !px-3 !text-sm pick-me" data-id="${p.id}" ${isActive ? 'disabled' : ''}>
+            ${isActive ? '✅ Currently Active' : 'Act as this Profile'}
+          </button>`;
+        pickGridEl.appendChild(card);
+      });
+    }
+
+    document.addEventListener('click', (ev) => {
+      if (ev.target.classList.contains('pick-me')) {
+        const profileId = ev.target.dataset.id;
+        setActiveProfile(profileId); // Set this as the active user for the whole session
+        location.reload(); // Reload the page to show updated status
+      }
+    });
+
+    if (activeProfile) {
+        document.getElementById('main-header').innerHTML = `
+            <h1 class="text-3xl font-bold mt-4 text-slate-800">Find Matches for ${activeProfile.name}</h1>
+            <p class="text-slate-600 mt-1">Showing top potential partners based on your profile.</p>
+        `;
+        const resultsEl = document.getElementById('results');
+        const matches = findMatchesFor(activeProfile.id);
+        if (!matches.length) {
+          resultsEl.innerHTML += '<p class="text-slate-500">No suitable matches found.</p>';
+        } else {
+            const grid = document.createElement('div');
+            grid.className = 'profile-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-8';
+            matches.forEach(m => {
+              const card = document.createElement('div'); card.className = 'profile-card';
+              const placeholderDiv = `<div class='h-44 bg-slate-100 flex items-center justify-center text-slate-400'>No Photo</div>`;
+              const imgHTML = m.photo ? `<img src="${m.photo}" class="h-44 w-full object-cover" onerror="this.outerHTML='${placeholderDiv}'"/>` : placeholderDiv;
+              card.innerHTML = `${imgHTML}<div class="p-4"><h3 class="font-bold">${m.name} <span class="text-orange-500 font-normal">(${m.score} pts)</span></h3><p class="text-sm text-slate-500">${m.species} • Age ${m.age}</p><div class="mt-4"><a href="profile.html?id=${m.id}" class="text-sm font-semibold text-orange-600 hover:text-orange-800">View Profile &rarr;</a></div></div>`;
+              grid.appendChild(card);
+            });
+            resultsEl.appendChild(grid);
+        }
+    }
+  </script>
+</body>
+</html>

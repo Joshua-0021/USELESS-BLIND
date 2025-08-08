@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Add Profile — Janthanthram Matrimony</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-premium-gradient">
+
+<nav class="glass sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold text-xl">❤️</div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800 malayalam">നീ എന്റെ ഞാൻ നിന്റെ</div>
+          <div class="text-xs text-slate-500 uppercase tracking-widest">Animal Matrimony</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="active-profile-display" class="flex items-center gap-2"></div>
+        
+        <a href="my-matches.html" title="My Successful Matches" class="text-2xl hover:text-orange-600">💖</a>
+        <a href="add.html" class="btn-premium">Create Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-2xl mx-auto p-6">
+    <form id="animalForm" class="bg-white p-8 rounded-2xl shadow-lg space-y-6">
+      <div id="step-indicator" class="flex justify-center items-center space-x-4 mb-8">
+          <div class="step active" data-step="1">1. Basics</div>
+          <div class="step-connector"></div>
+          <div class="step" data-step="2">2. Personality</div>
+          <div class="step-connector"></div>
+          <div class="step" data-step="3">3. Photo</div>
+      </div>
+      
+      <div class="form-step" data-step="1">
+        <h2 class="text-2xl font-bold text-slate-800">The Basics</h2>
+        <p class="text-slate-500 mb-6">Let's get to know the star.</p>
+        <div><label class="block text-sm font-medium mb-1">Name</label><input name="name" required class="form-input" placeholder="K. K. Kunjikrishnan"/></div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div><label class="block text-sm font-medium mb-1">Age</label><input name="age" type="number" min="0" required class="form-input" /></div>
+          <div><label class="block text-sm font-medium mb-1">Species</label><input name="species" required class="form-input" placeholder="Crow, Cat, Cow..."/></div>
+        </div>
+      </div>
+      
+      <div class="form-step hidden" data-step="2">
+        <h2 class="text-2xl font-bold text-slate-800">Personality & Preferences</h2>
+        <p class="text-slate-500 mb-6">What makes them unique?</p>
+        <div><label class="block text-sm font-medium mb-1">Short Bio</label><textarea name="bio" rows="3" required class="form-input" placeholder="A simple crow with a heart of gold..."></textarea></div>
+        <div class="mt-4"><label class="block text-sm font-medium mb-1">Diet</label>
+          <select name="diet" required class="form-input">
+            <option>Vegetarian</option><option>Non-Vegetarian</option><option>Will eat anything</option>
+          </select>
+        </div>
+        <div class="mt-4"><label class="block text-sm font-medium mb-1">Hobbies (comma separated)</label><input name="hobbies" class="form-input" placeholder="Photobombing selfies, chasing lasers"/></div>
+      </div>
+
+      <div class="form-step hidden" data-step="3">
+          <h2 class="text-2xl font-bold text-slate-800">Profile Photo</h2>
+          <p class="text-slate-500 mb-6">A picture is worth a thousand 'kaas'.</p>
+          <div>
+            <label class="block text-sm font-medium mb-1">Photo URL</label>
+            <input name="photoURL" type="url" placeholder="https://i.imgur.com/..." class="form-input" />
+            <p class="text-xs text-slate-400 mt-1">Tip: Use a direct image link from a site like Imgur.</p>
+          </div>
+          <div class="my-4 text-center text-slate-400 text-sm">OR</div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Upload Image</label>
+            <input name="photoFile" type="file" accept="image/*" class="form-input" />
+          </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-6 border-t border-slate-200">
+        <button type="button" id="prevBtn" class="btn-secondary">Previous</button>
+        <button type="button" id="nextBtn" class="btn-premium">Next</button>
+        <button type="submit" id="submitBtn" class="btn-premium hidden">Save Profile</button>
+      </div>
+      <p id="status" class="text-sm text-center text-slate-500 pt-2"></p>
+    </form>
+  </main>
+
+  <style> /* Mini-styles for step indicator */
+    .step { color: #94a3b8; font-weight: 600; text-align: center;}
+    .step.active { color: var(--accent-primary); }
+    .step-connector { height: 2px; background-color: #e2e8f0; flex-grow: 1; }
+  </style>
+
+  <script src="app-local.js"></script>
+  <script>
+    // --- Multi-Step Form Logic ---
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const formSteps = document.querySelectorAll('.form-step');
+    const stepIndicators = document.querySelectorAll('#step-indicator .step');
+    let currentStep = 1;
+
+    function updateFormSteps() {
+      formSteps.forEach(step => step.classList.toggle('hidden', parseInt(step.dataset.step) !== currentStep));
+      stepIndicators.forEach(ind => ind.classList.toggle('active', parseInt(ind.dataset.step) === currentStep));
+      prevBtn.classList.toggle('hidden', currentStep === 1);
+      nextBtn.classList.toggle('hidden', currentStep === formSteps.length);
+      submitBtn.classList.toggle('hidden', currentStep !== formSteps.length);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < formSteps.length) {
+        currentStep++;
+        updateFormSteps();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateFormSteps();
+      }
+    });
+    
+    updateFormSteps(); // Initial setup
+
+    // --- Form Submission Logic ---
+    document.getElementById('animalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('status');
+      status.textContent = 'Saving...';
+      const f = e.target;
+      
+      try {
+        let photo = f.photoURL.value.trim() || '';
+        if (!photo && f.photoFile.files[0]) {
+            photo = await fileToBase64(f.photoFile.files[0]);
+        }
+        
+        const profile = { 
+          id: 'p_' + Date.now(), 
+          name: f.name.value.trim(), 
+          age: Number(f.age.value), 
+          species: f.species.value.trim(), 
+          diet: f.diet.value, 
+          hobbies: f.hobbies.value.split(',').map(s=>s.trim()).filter(Boolean), 
+          bio: f.bio.value.trim(),
+          photo: photo, 
+          createdAt: Date.now() 
+        };
+
+        saveProfileToStorage(profile);
+        status.textContent = 'Profile Saved! Redirecting...';
+        setTimeout(()=> location.href = `profile.html?id=${profile.id}`, 800);
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Error: Could not save profile. Check console for details.';
+      }
+    });
+
+    function fileToBase64(file){
+      return new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = (err) => rej(new Error('File read error: ' + err));
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+</body>
+</html>

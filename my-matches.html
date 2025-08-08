@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Successful Matches — നീ എന്റെ ഞാൻ നിന്റെ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-premium-gradient">
+
+  <nav class="glass sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold text-xl">❤️</div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800 malayalam">നീ എന്റെ ഞാൻ നിന്റെ</div>
+          <div class="text-xs text-slate-500 uppercase tracking-widest">Animal Matrimony</div>
+        </div>
+      </a>
+      <div class="flex items-center gap-4">
+        <div id="active-profile-display" class="flex items-center gap-2"></div>
+        <a href="my-matches.html" title="My Successful Matches" class="text-2xl hover:text-orange-600">💖</a>
+        <a href="add.html" class="btn-premium">Create Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <div id="header-section">
+        <h1 class="text-3xl font-bold mt-4 text-slate-800">My Successful Matches</h1>
+        <p class="text-slate-600 mt-1">These are the animals who also liked you back!</p>
+    </div>
+    <div id="mutual-matches-grid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
+  </main>
+
+  <script src="app-local.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const activeProfile = getActiveProfile();
+        const headerEl = document.getElementById('header-section');
+        const gridEl = document.getElementById('mutual-matches-grid');
+
+        if (!activeProfile) {
+            headerEl.innerHTML = `
+                <h1 class="text-3xl font-bold mt-4 text-slate-800">No Active Profile</h1>
+                <p class="text-slate-600 mt-1">Please go to the <a href="matches.html" class="font-bold text-orange-600">'Find Matches'</a> page to select a profile to act as.</p>
+            `;
+            return;
+        }
+
+        headerEl.querySelector('h1').textContent = `Successful Matches for ${activeProfile.name}`;
+        
+        const mutualMatches = getMutualMatchesFor(activeProfile.id);
+
+        if (!mutualMatches.length) {
+            gridEl.innerHTML = `<p class="text-slate-500 col-span-full">No successful matches yet. Go like some more profiles!</p>`;
+            return;
+        }
+        
+        mutualMatches.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'profile-card';
+            const placeholderDiv = `<div class='h-44 bg-slate-100 flex items-center justify-center text-slate-400'>No Photo</div>`;
+            const imgHTML = m.photo ? `<img src="${m.photo}" class="h-44 w-full object-cover" onerror="this.outerHTML='${placeholderDiv}'"/>` : placeholderDiv;
+            card.innerHTML = `
+                ${imgHTML}
+                <div class="p-4">
+                    <h3 class="font-bold">${m.name}</h3>
+                    <p class="text-sm text-slate-500">${m.species} • Age ${m.age}</p>
+                    <div class="mt-4">
+                        <a href="profile.html?id=${m.id}" class="text-sm font-semibold text-orange-600 hover:text-orange-800">View Profile & Chat &rarr;</a>
+                    </div>
+                </div>`;
+            gridEl.appendChild(card);
+        });
+    });
+  </script>
+</body>
+</html>
