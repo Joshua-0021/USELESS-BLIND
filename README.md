@@ -102,7 +102,7 @@ For Hardware:
 
 ### Project Demo
 # Video
-[Add your demo video link here]
+https://drive.google.com/file/d/1Pw4IvQW-Z3zi2wSb0Dngv9i6p1USL2kH/view?usp=drive_link
 *Explain what the video demonstrates*
 
 # Additional Demos
